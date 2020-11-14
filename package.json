@@ -1,0 +1,23 @@
+{
+    "name": "ses-logger",
+    "description": "Log and save and notifications from SES",
+    "version": "0.0.1",
+    "private": true,
+    "author": "Mohammad Abu Musa <m.abumusa@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "hhttps://github.com/mabumusa1/SES-Events-Logger/issues"
+    },
+    "homepage": "https://github.com/mabumusa1/SES-Events-Logger#readme",
+    "devDependencies": {
+        "glob": "^7.1.6",
+        "jest": "^24.7.1",
+        "lambda-tester": "^4.0.1",
+        "webpack": "^5.4.0",
+        "webpack-cli": "^4.2.0"
+    },
+    "scripts": {
+        "test": "jest",
+        "build": "webpack"
+    }
+}
