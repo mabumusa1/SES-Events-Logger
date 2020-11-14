@@ -31,5 +31,6 @@ jobs:
     - name: 
       uses: actions/upload-artifact@v2
       with:
-        name: output.zip
-        path: dist.zip
+        name: ${{ env.name }}-name
+        path: dist/
+        if-no-files-found: error
