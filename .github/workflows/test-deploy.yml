@@ -47,9 +47,9 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
     - name: Download Artifact
       uses: actions/download-artifact@v2
-      path: ~/download/
       with:
         name: ${{ matrix.node-version }}
+        path: ~/download/
     - name: Display structure of downloaded files
       run: aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file template-export.yml --stack-name seslogger
       working-directory: ~/download/    
