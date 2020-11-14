@@ -13,13 +13,14 @@ Resources:
     Properties:
       Description: 'A Lambda function that logs the payload of messages to a database'
       Runtime: nodejs12.x
-      Handler: dist/function.js      
+      Handler: dist/function.js
+      CodeUri: dist/
       Events:
         SNSTopicEvent:
           Type: SNS
           Properties:
             Topic: !Ref SESTopic
-      MemorySize: 32
+      MemorySize: 128
       Timeout: 10
       Policies:
         - AWSLambdaBasicExecutionRole
