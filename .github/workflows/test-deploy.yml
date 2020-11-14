@@ -50,4 +50,4 @@ jobs:
       with:
         name: ${{ matrix.node-version }}
     - name: Deploy
-    - run: aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file /home/user/handler/dist/template-export.yml --stack-name seslogger
+      run: aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file /home/user/handler/dist/template-export.yml --stack-name seslogger
