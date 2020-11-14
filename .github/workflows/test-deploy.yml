@@ -47,7 +47,7 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
     - name: Download Artifact
       uses: actions/download-artifact@v2
-      paths: ~/download/
+      path: ~/download/
       with:
         name: ${{ matrix.node-version }}
     - name: Display structure of downloaded files
