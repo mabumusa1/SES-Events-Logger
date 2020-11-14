@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'function to process and store SES notifications'
+Transform:
+  - 'AWS::Serverless-2016-10-31'
+Resources:
+  SESTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      DisplayName: ses_topic
+      TopicName: ses_topic
+  Logger:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Description: 'A Lambda function that logs the payload of messages to a database'
+      Runtime: nodejs12.x
+      Handler: src/handlers/index.handler
+      Events:
+        SNSTopicEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref SESTopic
+      MemorySize: 32
+      Timeout: 10
+      Policies:
+        - AWSLambdaBasicExecutionRole
