@@ -13,8 +13,8 @@ Resources:
     Properties:
       Description: 'A Lambda function that logs the payload of messages to a database'
       Runtime: nodejs12.x
-      Handler: ./dist/function.js
-      CodeUri: ./dist/function.js
+      Handler: dist/function.js
+      CodeUri: dist/function.js
       Events:
         SNSTopicEvent:
           Type: SNS
