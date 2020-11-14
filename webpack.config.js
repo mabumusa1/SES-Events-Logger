@@ -1,7 +1,7 @@
 module.exports = {
     entry: './src/handlers/index.js',
     output: {
-      filename: 'dist/function.js',
+      filename: 'function.js',
       libraryTarget: "umd"
     }
 };

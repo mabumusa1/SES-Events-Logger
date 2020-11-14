@@ -27,10 +27,9 @@ jobs:
         npm run test
         npm run build
         aws cloudformation package --template template.yml --s3-bucket ${{ secrets.S3_BUCKET }} --output-template dist/template-export.yml
-        zip -R dist.zip dist/
     - name: 
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ env.name }}-name
+        name: ${{ matrix.node-version }}-name
         path: dist/
         if-no-files-found: error
