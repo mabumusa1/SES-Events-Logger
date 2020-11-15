@@ -1,4 +1,6 @@
-exports.handler = (event, context) => {
+exports.handler = async (event, context) => {
+  const dbConnection = require('./dbConnectionPool');
+
     /**
      * We have two types to be handled 
      * Notifications from SES without a configuration set
@@ -18,21 +20,13 @@ exports.handler = (event, context) => {
       recordType = element.Sns.eventType.toLowerCase();
       message = element.Sns;
     }
+    let item = [];
 
-    // Compile the general structure to be stored in the db
-    let item = {
-      messageId: message.mail.messageId,
-      eventType: recordType,
-      sourceArn: message.mail.sourceArn,
-      source: message.mail.source,
-      destination: JSON.stringify(message.mail.destination),
-      subject: null,
-      content: '',
-      timestamp: message.mail.timestamp
-    }
     // We want to store the subject line 
     if('commonHeaders' in message.mail){
-      item.subject = message.mail.commonHeaders.subject
+      item['subject'] = message.mail.commonHeaders.subject
+    }else{
+      item['subject'] = null;
     }
 
 
@@ -113,8 +107,26 @@ exports.handler = (event, context) => {
         break;
 
       default:
-        context.fail('Undefined Event Type');
-        break;
+        return context.fail('Undefined Event Type');
     }
-    context.succeed(item);
+
+    var date = new Date(message.mail.timestamp);
+
+    let con = await dbConnection();
+    try {
+      const tableName = process.env.DB_TABLE || `log_${date.toISOString().substr(0, 7).replace('-', '_')}`
+      var sql = `INSERT INTO ${tableName} (messageId, sourceArn, source,sendingAccountId,subject,timestamp,content) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+      var insertRecord = [message.mail.messageId, message.mail.sourceArn, message.mail.source, message.mail.sendingAccountId, item['subject'],date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0], item['content']]     
+      await con.query("START TRANSACTION");
+      await con.query(sql, insertRecord)  
+      await con.query("COMMIT");
+    } catch (error) {
+      await con.query("ROLLBACK");
+      context.fail(error);
+    } finally {
+      await con.release();
+      await con.destroy();
+      context.succeed();
+    }
+   
 }

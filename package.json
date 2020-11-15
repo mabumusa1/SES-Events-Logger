@@ -17,7 +17,10 @@
         "webpack-cli": "^4.2.0"
     },
     "scripts": {
-        "test": "jest",
+        "test": "export $(cat .env | xargs) && jest",
         "build": "webpack"
+    },
+    "dependencies": {
+        "promise-mysql": "^4.1.3"
     }
 }
