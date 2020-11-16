@@ -17,7 +17,8 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_USER: logger
+          MYSQL_PASSWORD: password
           MYSQL_DATABASE: logger
         ports:
           - 3306
@@ -26,7 +27,8 @@ jobs:
       mariadb:
         image: mariadb:10.3
         env:
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_USER: logger
+          MYSQL_PASSWORD: password
           MYSQL_DATABASE: logger
         ports:
           - 3306
@@ -42,9 +44,8 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
     - name: Create Database
       run: |
-        sudo /etc/init.d/mysql start
         sudo apt-get install -y mysql-client
-        mysql -h 127.0.0.1 -uroot -ppassword logger < database/migration.sql
+        mysql -h 127.0.0.1 -ulogger -ppassword logger < database/migration.sql
     - name: Use Node.js ${{ matrix.node-version }}    
       env: 
         DB_HOST: 127.0.0.1
