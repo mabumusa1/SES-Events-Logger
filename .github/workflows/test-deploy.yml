@@ -66,7 +66,7 @@ jobs:
         DB_PORT: ${{ job.services.mysql.ports[3306] }}
         DB_DATABASE: logger
         DB_TABLE: logs
-
+        TZ: Asia/Amman
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
@@ -94,5 +94,4 @@ jobs:
       working-directory: ${{steps.download.outputs.download-path}}
       run: |
         ls -R
-        aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file 12.x/template-export.yml --stack-name seslogger      
-
+        aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file 12.x/template-export.yml --stack-name seslogger

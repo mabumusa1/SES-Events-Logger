@@ -21,7 +21,7 @@ describe('Test for default-handler', function () {
       done()
     }
   })
-  afterEach(async (done) => {
+  afterEach(async () => {
     const con = await dbConnection()
     try {
       await con.query(`DELETE FROM ${tableName}`)
@@ -97,7 +97,7 @@ describe('Test for default-handler', function () {
             break
           case 'complaint':
             if (isNotification) {
-              expect(Item).toMatchObject({
+              expect.objectContaining({
                 messageId: '0000013786031775-163e3910-53eb-4c8e-a04a-complaint-notification',
                 sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
                 source: 'john@example.com',

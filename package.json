@@ -19,8 +19,8 @@
         "webpack-cli": "^4.2.0"
     },
     "scripts": {
-        "test": "jest --verbose --maxWorkers=2",
-        "testlocal": "export $(cat .env | xargs) && jest",
+        "test": "jest",
+        "testlocal": "export $(cat .env | xargs) && export TZ=Asia/Amman && jest",
         "build": "webpack",
         "lint": "standard",
         "lintfix": "standard --fix",
