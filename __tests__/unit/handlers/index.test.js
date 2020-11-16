@@ -21,7 +21,7 @@ describe('Test for default-handler', function () {
       done()
     }
   })
-  afterEach(async () => {
+  afterEach(async (done) => {
     const con = await dbConnection()
     try {
       await con.query(`DELETE FROM ${tableName}`)
