@@ -47,7 +47,7 @@ jobs:
     - name: Create Database
       run: |
         sudo apt-get install -y mysql-client
-        mysql -h 127.0.0.1 -ulogger -ppassword logger < database/migration.sql
+        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} < database/migration.sql
     - name: Use Node.js ${{ matrix.node-version }}    
       env: 
         DB_HOST: 127.0.0.1
