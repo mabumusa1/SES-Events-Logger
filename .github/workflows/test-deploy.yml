@@ -5,14 +5,14 @@ on:
     branches:
       - staging
       - deploy
-env:
-  MYSQL_USER: logger
-  MYSQL_PASSWORD: password
-  MYSQL_DATABASE: logger
 jobs:
   test_and_build:
     runs-on: ubuntu-latest
     name: Test and Build ${{ matrix.node-version }} ${{ matrix.db-types }}
+    env:
+      MYSQL_USER: logger
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: logger
     strategy:
       matrix:
         node-version: [10.x, 12.x]
@@ -20,12 +20,20 @@ jobs:
     services:
       mysql:
         image: mysql:5.7
+        env:
+          MYSQL_USER: logger
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: logger
         ports:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
       mariadb:
         image: mariadb:10.3
+        env:
+          MYSQL_USER: logger
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: logger
         ports:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
