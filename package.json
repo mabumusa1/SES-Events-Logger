@@ -23,8 +23,7 @@
         "testlocal": "export $(cat .env | xargs) && export TZ=Asia/Amman && jest",
         "build": "webpack",
         "lint": "standard",
-        "lintfix": "standard --fix",
-        "precommit": "npm run lintfix"
+        "lintfix": "standard --fix"
     },
     "dependencies": {
         "promise-mysql": "^4.1.3"

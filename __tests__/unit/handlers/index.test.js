@@ -72,7 +72,7 @@ describe('Test for default-handler', function () {
                 subject: 'Hello',
                 timestamp: '2016-01-27T14:59:38.000Z'
               })
-              expect(content).toEqual(JSON.parse('{"bounceType": "Permanent","bounceSubType": "General","bouncedRecipients":[{"emailAddress":"jane@example.com"},{"emailAddress":"richard@example.com"}],"timestamp":"2016-01-27T14:59:38.237Z"}'))              
+              expect(content).toEqual(JSON.parse('{"bounceType": "Permanent","bounceSubType": "General","bouncedRecipients":[{"emailAddress":"jane@example.com"},{"emailAddress":"richard@example.com"}],"timestamp":"2016-01-27T14:59:38.237Z"}'))
             } else {
               expect(Item).toMatchObject({
                 messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-bounce-configset',
@@ -82,7 +82,7 @@ describe('Test for default-handler', function () {
                 subject: 'Message sent from Amazon SES',
                 timestamp: '2017-08-05T00:40:02.000Z'
               })
-              expect(content).toEqual(JSON.parse('{"reportingMTA":"dsn; mta.example.com","bounceType":"Permanent","bounceSubType":"General","bouncedRecipients":[{"emailAddress":"recipient@example.com","action":"failed","status":"5.1.1","diagnosticCode":"smtp; 550 5.1.1 user unknown"}],"timestamp":"2017-08-05T00:41:02.669Z"}'))              
+              expect(content).toEqual(JSON.parse('{"reportingMTA":"dsn; mta.example.com","bounceType":"Permanent","bounceSubType":"General","bouncedRecipients":[{"emailAddress":"recipient@example.com","action":"failed","status":"5.1.1","diagnosticCode":"smtp; 550 5.1.1 user unknown"}],"timestamp":"2017-08-05T00:41:02.669Z"}'))
             }
             break
           case 'click':
@@ -94,7 +94,7 @@ describe('Test for default-handler', function () {
               subject: 'Message sent from Amazon SES',
               timestamp: '2017-08-08T23:50:05.000Z'
             })
-            expect(content).toEqual(JSON.parse('{"ipAddress":"192.0.2.1","link":"http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-smtp.html","linkTags":{"samplekey0":["samplevalue0"],"samplekey1":["samplevalue1"]},"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36","timestamp":"2017-08-09T23:51:25.570Z"}'))              
+            expect(content).toEqual(JSON.parse('{"ipAddress":"192.0.2.1","link":"http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-smtp.html","linkTags":{"samplekey0":["samplevalue0"],"samplekey1":["samplevalue1"]},"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36","timestamp":"2017-08-09T23:51:25.570Z"}'))
             break
           case 'complaint':
             if (isNotification) {
@@ -160,7 +160,7 @@ describe('Test for default-handler', function () {
               source: 'sender@example.com',
               sendingAccountId: '123456789012',
               subject: 'Message sent from Amazon SES',
-              timestamp: '2017-08-08T21:59:49.000Z'              
+              timestamp: '2017-08-08T21:59:49.000Z'
             })
             expect(content).toEqual(JSON.parse('{"ipAddress":"192.0.2.1","userAgent":"Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_3 like Mac OS X) AppleWebKit/603.3.8 (KHTML, like Gecko) Mobile/14G60","timestamp":"2017-08-09T22:00:19.652Z"}'))
             break
@@ -171,7 +171,7 @@ describe('Test for default-handler', function () {
               source: 'sender@example.com',
               sendingAccountId: '123456789012',
               subject: 'Message sent from Amazon SES',
-              timestamp: '2016-10-14T17:38:15.000Z',              
+              timestamp: '2016-10-14T17:38:15.000Z'
             })
             expect(content).toEqual(JSON.parse('{"reason":"Bad content"}'))
             break
@@ -193,7 +193,7 @@ describe('Test for default-handler', function () {
               source: 'sender@example.com',
               sendingAccountId: '123456789012',
               subject: 'Message sent from Amazon SES',
-              timestamp: '2016-10-14T05:02:16.000Z',              
+              timestamp: '2016-10-14T05:02:16.000Z'
             })
             expect(content).toEqual(JSON.parse('{}'))
             break
