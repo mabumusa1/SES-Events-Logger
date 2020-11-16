@@ -8,9 +8,30 @@ on:
 jobs:
   test_and_build:
     runs-on: ubuntu-latest
+    name: Test and Build ${{ matrix.php-version }} ${{ matrix.db-types }}
     strategy:
       matrix:
         node-version: [10.x, 12.x]
+        db-types: ['mysql', 'mariadb']
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: logger
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      mariadb:
+        image: mariadb:10.3
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: logger
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3        
+        
     steps:
     - uses: actions/checkout@v2
     - name: Configure AWS Credentials
@@ -19,12 +40,24 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Create Database
+    - run: |
+        sudo apt-get install -y mysql-client
+        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword logger < database/migration.sql
+    - name: Use Node.js ${{ matrix.node-version }}    
+      env: 
+        DB_HOST=127.0.0.1
+        DB_USER=root
+        DB_PASSWORD=password
+        DB_PORT=3306
+        DB_DATABASE=logger
+        DB_TABLE=logs 
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
     - run: |
         npm install
+        npm run lint
         npm run test
         npm run build
         aws cloudformation package --template template.yml --s3-bucket ${{ secrets.S3_BUCKET }} --output-template dist/template-export.yml
