@@ -48,14 +48,8 @@ jobs:
       run: |
         sudo apt-get install -y mysql-client
         mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} < database/migration.sql
+        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} -e "show tables;"
     - name: Use Node.js ${{ matrix.node-version }}    
-      env: 
-        DB_HOST: 127.0.0.1
-        DB_USER: logger
-        DB_PASSWORD: password
-        DB_PORT: ${{ job.services.mysql.ports[3306] }}
-        DB_DATABASE: logger
-        DB_TABLE: logs
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
@@ -65,6 +59,14 @@ jobs:
         npm run test
         npm run build
         aws cloudformation package --template template.yml --s3-bucket ${{ secrets.S3_BUCKET }} --output-template dist/template-export.yml
+      env: 
+        DB_HOST: 127.0.0.1
+        DB_USER: logger
+        DB_PASSWORD: password
+        DB_PORT: ${{ job.services.mysql.ports[3306] }}
+        DB_DATABASE: logger
+        DB_TABLE: logs
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
