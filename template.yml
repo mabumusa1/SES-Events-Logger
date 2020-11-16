@@ -25,7 +25,7 @@ Resources:
     Properties:
       Description: 'A Lambda function that logs the payload of messages to a database'
       Runtime: nodejs12.x
-      Handler: dist/function.js
+      Handler: function.handler
       CodeUri: dist/
       Environment:
         Variables:
