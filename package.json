@@ -19,7 +19,8 @@
         "webpack-cli": "^4.2.0"
     },
     "scripts": {
-        "test": "export $(cat .env | xargs) && jest",
+        "test": "jest",
+        "testlocal": "export $(cat .env | xargs) && jest",
         "build": "webpack",
         "lint": "standard",
         "lintfix": "standard --fix",
