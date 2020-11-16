@@ -182,7 +182,7 @@ describe('Test for default-handler', function () {
               sendingAccountId: '123456789012',
               subject: null,
               timestamp: '2018-01-22T18:43:06.000Z',
-              content: "{\"errorMessage\":\"Attribute 'attributeName' is not present in the rendering data.\",\"templateName\":\"MyTemplate\"}"
+              content: '{"errorMessage":"Attribute \'attributeName\' is not present in the rendering data.","templateName":"MyTemplate"}'
             })
             break
           case 'send':
