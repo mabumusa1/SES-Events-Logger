@@ -41,7 +41,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
     - name: Create Database
-    - run: |
+      run: |
         sudo apt-get install -y mysql-client
         mysql --host 127.0.0.1 --port 3306 -uroot -ppassword logger < database/migration.sql
     - name: Use Node.js ${{ matrix.node-version }}    
