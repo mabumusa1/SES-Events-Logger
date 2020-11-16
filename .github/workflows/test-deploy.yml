@@ -93,5 +93,4 @@ jobs:
     - name: Display structure of downloaded files
       working-directory: ${{steps.download.outputs.download-path}}
       run: |
-        ls -R
-        aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file 12.x/template-export.yml --stack-name seslogger
+        aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file 12.x/template-export.yml --parameter-overrides DBHOST=${{ secrets.DB_HOST }} DBUSER=${{ secrets.DB_USER }} DBDATABASE=${{ secrets.DB_DATABASE }} DBPORT=${{ secrets.DB_PORT }} DBPASSWORD=${{ secrets.DB_PASSWORD }} --stack-name seslogger

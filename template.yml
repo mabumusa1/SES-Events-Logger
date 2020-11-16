@@ -2,6 +2,18 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'function to process and store SES notifications'
 Transform:
   - 'AWS::Serverless-2016-10-31'
+Parameters: 
+  DBHOST: 
+    Type: String
+  DBUSER: 
+    Type: String
+  DBPASSWORD: 
+    Type: String
+  DBPORT: 
+    Type: Number
+  DBDATABASE: 
+    Type: String
+
 Resources:
   SESTopic:
     Type: 'AWS::SNS::Topic'
@@ -17,16 +29,22 @@ Resources:
       CodeUri: dist/
       Environment:
         Variables:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_HOST: 
+            Ref: "DBHOST"
+          DB_USER:
+            Ref: "DBUSER"
+          DB_PASSWORD: 
+            Ref: "DBPASSWORD"
+          DB_PORT: 
+            Ref: "DBPORT"
+          DB_DATABASE: 
+            Ref: "DBDATABASE"
       Events:
         SNSTopicEvent:
           Type: SNS
           Properties:
-            Topic: !Ref SESTopic
+            Topic:
+              Ref: "SESTopic"
       MemorySize: 128
       Timeout: 10
       Policies:
