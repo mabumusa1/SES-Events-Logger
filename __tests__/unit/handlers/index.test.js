@@ -171,7 +171,7 @@ describe('Test for default-handler', function () {
               sendingAccountId: '123456789012',
               subject: 'Message sent from Amazon SES',
               timestamp: '2016-10-14T17:38:15.000Z',
-              content: '{"reason":"Bad content"}'
+              content: '{"reason": "Bad content"}'
             })
             break
           case 'rendering failure':
