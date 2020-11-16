@@ -8,7 +8,7 @@ on:
 jobs:
   test_and_build:
     runs-on: ubuntu-latest
-    name: Test and Build ${{ matrix.php-version }} ${{ matrix.db-types }}
+    name: Test and Build ${{ matrix.node-version }} ${{ matrix.db-types }}
     strategy:
       matrix:
         node-version: [10.x, 12.x]
@@ -30,7 +30,7 @@ jobs:
           MYSQL_DATABASE: logger
         ports:
           - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3        
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         
     steps:
     - uses: actions/checkout@v2
@@ -42,6 +42,7 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
     - name: Create Database
       run: |
+        sudo /etc/init.d/mysql start
         sudo apt-get install -y mysql-client
         mysql --host 127.0.0.1 --port 3306 -uroot -ppassword logger < database/migration.sql
     - name: Use Node.js ${{ matrix.node-version }}    
