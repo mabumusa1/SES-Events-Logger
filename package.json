@@ -19,7 +19,7 @@
         "webpack-cli": "^4.2.0"
     },
     "scripts": {
-        "test": "jest",
+        "test": "jest --verbose --maxWorkers=2",
         "testlocal": "export $(cat .env | xargs) && jest",
         "build": "webpack",
         "lint": "standard",
