@@ -1,6 +1,6 @@
 exports.handler = async (event, context) => {
   const dbConnection = require('./dbConnectionPool')
-
+  const axios = require('axios');
   /**
      * We have two types to be handled
      * Notifications from SES without a configuration set
@@ -107,9 +107,12 @@ exports.handler = async (event, context) => {
     const tableName = process.env.DB_TABLE || `log_${date.toISOString().substr(0, 7).replace('-', '_')}`
     const sql = `INSERT INTO ${tableName} (messageId, sourceArn, source,sendingAccountId,subject,timestamp,content) VALUES (?, ?, ?, ?, ?, ?, ?)`
     const insertRecord = [message.mail.messageId, message.mail.sourceArn, message.mail.source, message.mail.sendingAccountId, item.subject, date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0], item.content]
+    //TODO: GET THE URL TO FORWARD TO FROM MYSQL
+    await axios.post('/', element.Sns);
     await con.query('START TRANSACTION')
     await con.query(sql, insertRecord)
-    await con.query('COMMIT')
+    await con.query('COMMIT')    
+    
   } catch (error) {
     await con.query('ROLLBACK')
     context.fail(error)

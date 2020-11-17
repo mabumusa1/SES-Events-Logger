@@ -1,9 +1,12 @@
 const glob = require('glob')
 const path = require('path')
+const axios = require('axios');
+jest.mock('axios');
 
 const LambdaTester = require('lambda-tester')
 const loggerHandler = require('../../../src/handlers/index.js').handler
 const dbConnection = require('../../../src/handlers/dbConnectionPool')
+
 
 const tableName = process.env.DB_TABLE
 
@@ -49,6 +52,11 @@ describe('Test for default-handler', function () {
         recordType = element.Sns.eventType.toLowerCase()
         message = element.Sns
       }
+      axios.post.mockImplementationOnce((url, data) => {
+        expect(data).toEqual(payload.Records[0].Sns)
+        Promise.resolve({})
+      })
+
 
       // Add the record to the database
       await LambdaTester(loggerHandler)
@@ -225,6 +233,7 @@ describe('Test for default-handler', function () {
         }
       } catch (error) {
         fail(error)
+        done()
       } finally {
         await con.release()
         await con.destroy()
