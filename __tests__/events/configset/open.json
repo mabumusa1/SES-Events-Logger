@@ -11,7 +11,7 @@
                   "from":[
                      "sender@example.com"
                   ],
-                  "messageId":"EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-open-configset",
+                  "messageId":"00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3",
                   "subject":"Message sent from Amazon SES",
                   "to":[
                      "recipient@example.com"
@@ -51,7 +51,7 @@
                   }
                ],
                "headersTruncated":false,
-               "messageId":"EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-open-configset",
+               "messageId":"00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3",
                "sendingAccountId":"123456789012",
                "source":"sender@example.com",
                "tags":{

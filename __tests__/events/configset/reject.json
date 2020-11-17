@@ -11,7 +11,7 @@
               "source": "sender@example.com",
               "sourceArn": "arn:aws:ses:us-east-1:123456789012:identity/sender@example.com",
               "sendingAccountId": "123456789012",
-              "messageId": "EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-reject-configset",
+              "messageId": "00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3",
               "destination": [
                 "sender@example.com"
               ],
@@ -49,7 +49,7 @@
                 "to": [
                   "recipient@example.com"
                 ],
-                "messageId": "EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000",
+                "messageId": "00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3",
                 "subject": "Message sent from Amazon SES"
               },
               "tags": {

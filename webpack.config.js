@@ -4,5 +4,8 @@ module.exports = {
   output: {
     filename: 'function.js',
     libraryTarget: 'umd'
+  },
+  optimization: {
+    minimize: false
   }
 }

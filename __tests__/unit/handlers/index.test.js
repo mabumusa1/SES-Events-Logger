@@ -64,30 +64,52 @@ describe('Test for default-handler', function () {
         switch (recordType) {
           case 'bounce':
             if (isNotification) {
-              expect(Item).toMatchObject({
-                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-bounce-notification',
-                sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
-                source: 'john@example.com',
-                sendingAccountId: '123456789012',
-                subject: 'Hello',
-                timestamp: '2016-01-27T14:59:38.000Z'
-              })
+              if (Object.keys(message.mail).includes('commonHeaders')) {
+                expect(Item).toMatchObject({
+                  messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                  sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
+                  source: 'john@example.com',
+                  sendingAccountId: '123456789012',
+                  subject: 'Hello',
+                  timestamp: '2016-01-27T14:59:38.000Z'
+                })
+              } else {
+                expect(Item).toMatchObject({
+                  messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                  sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
+                  source: 'john@example.com',
+                  sendingAccountId: '123456789012',
+                  subject: null,
+                  timestamp: '2016-01-27T14:59:38.000Z'
+                })
+              }
               expect(content).toEqual(JSON.parse('{"bounceType": "Permanent","bounceSubType": "General","bouncedRecipients":[{"emailAddress":"jane@example.com"},{"emailAddress":"richard@example.com"}],"timestamp":"2016-01-27T14:59:38.237Z"}'))
             } else {
-              expect(Item).toMatchObject({
-                messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-bounce-configset',
-                sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
-                source: 'Sender Name <sender@example.com>',
-                sendingAccountId: '123456789012',
-                subject: 'Message sent from Amazon SES',
-                timestamp: '2017-08-05T00:40:02.000Z'
-              })
+              if (Object.keys(message.mail).includes('commonHeaders')) {
+                expect(Item).toMatchObject({
+                  messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                  sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+                  source: 'Sender Name <sender@example.com>',
+                  sendingAccountId: '123456789012',
+                  subject: 'Message sent from Amazon SES',
+                  timestamp: '2017-08-05T00:40:02.000Z'
+                })
+              } else {
+                expect(Item).toMatchObject({
+                  messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                  sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+                  source: 'Sender Name <sender@example.com>',
+                  sendingAccountId: '123456789012',
+                  subject: null,
+                  timestamp: '2017-08-05T00:40:02.000Z'
+                })
+              }
               expect(content).toEqual(JSON.parse('{"reportingMTA":"dsn; mta.example.com","bounceType":"Permanent","bounceSubType":"General","bouncedRecipients":[{"emailAddress":"recipient@example.com","action":"failed","status":"5.1.1","diagnosticCode":"smtp; 550 5.1.1 user unknown"}],"timestamp":"2017-08-05T00:41:02.669Z"}'))
             }
             break
           case 'click':
             expect(Item).toMatchObject({
-              messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-click-configset',
+              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
               sourceArn: null,
               source: 'sender@example.com',
               sendingAccountId: '123456789012',
@@ -99,7 +121,7 @@ describe('Test for default-handler', function () {
           case 'complaint':
             if (isNotification) {
               expect.objectContaining({
-                messageId: '0000013786031775-163e3910-53eb-4c8e-a04a-complaint-notification',
+                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
                 sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
                 source: 'john@example.com',
                 sendingAccountId: '123456789012',
@@ -109,7 +131,7 @@ describe('Test for default-handler', function () {
               expect(content).toEqual(JSON.parse('{"complainedRecipients":[{"emailAddress":"richard@example.com"}],"timestamp":"2016-01-27T14:59:38.237Z"}'))
             } else {
               expect(Item).toMatchObject({
-                messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-complaint-configset',
+                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
                 sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                 source: 'Sender Name <sender@example.com>',
                 sendingAccountId: '123456789012',
@@ -122,7 +144,7 @@ describe('Test for default-handler', function () {
           case 'delivery':
             if (isNotification) {
               expect(Item).toMatchObject({
-                messageId: '0000014644fe5ef6-9a483358-9170-4cb4-a269-delivery-notification',
+                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
                 sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
                 source: 'john@example.com',
                 sendingAccountId: '123456789012',
@@ -132,7 +154,7 @@ describe('Test for default-handler', function () {
               expect(content).toEqual(JSON.parse('{"recipients":["jane@example.com"],"reportingMTA":"a8-70.smtp-out.amazonses.com","smtpResponse":"250 ok:  Message 64111812 accepted","timestamp":"2016-01-27T14:59:38.237Z"}'))
             } else {
               expect(Item).toMatchObject({
-                messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-delivery-configset',
+                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
                 sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                 source: 'sender@example.com',
                 sendingAccountId: '123456789012',
@@ -144,7 +166,7 @@ describe('Test for default-handler', function () {
             break
           case 'deliverydelay':
             expect(Item).toMatchObject({
-              messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-deliverydelay-configset',
+              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
               sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
               source: 'sender@example.com',
               sendingAccountId: '123456789012',
@@ -155,7 +177,7 @@ describe('Test for default-handler', function () {
             break
           case 'open':
             expect(Item).toMatchObject({
-              messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-open-configset',
+              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
               sourceArn: null,
               source: 'sender@example.com',
               sendingAccountId: '123456789012',
@@ -166,7 +188,7 @@ describe('Test for default-handler', function () {
             break
           case 'reject':
             expect(Item).toMatchObject({
-              messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-reject-configset',
+              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
               sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
               source: 'sender@example.com',
               sendingAccountId: '123456789012',
@@ -177,7 +199,7 @@ describe('Test for default-handler', function () {
             break
           case 'rendering failure':
             expect(Item).toMatchObject({
-              messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-rendering-failure-configset',
+              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
               sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
               source: 'sender@example.com',
               sendingAccountId: '123456789012',
@@ -188,7 +210,7 @@ describe('Test for default-handler', function () {
             break
           case 'send':
             expect(Item).toMatchObject({
-              messageId: 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-send-configset',
+              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
               sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
               source: 'sender@example.com',
               sendingAccountId: '123456789012',

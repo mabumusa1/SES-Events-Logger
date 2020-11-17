@@ -30,39 +30,6 @@
               "destination":[
                  "recipient@example.com"
               ],
-              "headersTruncated":false,
-              "headers":[
-                 {
-                    "name":"From",
-                    "value":"Sender Name <sender@example.com>"
-                 },
-                 {
-                    "name":"To",
-                    "value":"recipient@example.com"
-                 },
-                 {
-                    "name":"Subject",
-                    "value":"Message sent from Amazon SES"
-                 },
-                 {
-                    "name":"MIME-Version",
-                    "value":"1.0"
-                 },
-                 {
-                    "name":"Content-Type",
-                    "value":"multipart/alternative; boundary=\"----=_Part_7307378_1629847660.1516840721503\""
-                 }
-              ],
-              "commonHeaders":{
-                 "from":[
-                    "Sender Name <sender@example.com>"
-                 ],
-                 "to":[
-                    "recipient@example.com"
-                 ],
-                 "messageId":"00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3",
-                 "subject":"Message sent from Amazon SES"
-              },
               "tags":{
                  "ses:configuration-set":[
                     "ConfigSet"

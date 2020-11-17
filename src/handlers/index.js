@@ -23,7 +23,7 @@ exports.handler = async (event, context) => {
   const item = []
 
   // We want to store the subject line
-  if ('commonHeaders' in message.mail) {
+  if (Object.keys(message.mail).includes('commonHeaders')) {
     item.subject = message.mail.commonHeaders.subject
   } else {
     item.subject = null
