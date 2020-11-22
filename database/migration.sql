@@ -12,6 +12,7 @@ CREATE TABLE `logs` (
   `sendingAccountId` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `subject` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `timestamp` datetime NOT NULL,
+  `published` boolean NOT NULL,
   `content` json NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
