@@ -11,6 +11,12 @@ const dbConnection = require('../../../src/handlers/dbConnectionPool')
 const tableName = process.env.DB_TABLE
 
 describe('Test for default-handler', function () {
+  beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+  })
+  afterAll(() => {
+    console.log.mockRestore()
+  })
   beforeEach(async (done) => {
     const con = await dbConnection()
     try {
