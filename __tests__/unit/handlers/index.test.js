@@ -72,6 +72,7 @@ describe('Test for default-handler', function () {
         const content = JSON.parse(rec[0].content)
         delete rec[0].content
         const Item = JSON.parse(JSON.stringify(rec[0]))
+        console.log(Item)
         expect(rec[0].published).toBeTruthy()
         delete rec[0].published
         switch (recordType) {
