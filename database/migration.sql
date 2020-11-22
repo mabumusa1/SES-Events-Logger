@@ -46,7 +46,7 @@ CREATE TABLE `forwarder` (
   `from_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE EY `arn` (`arn`),
+  UNIQUE KEY `arn` (`arn`),
   UNIQUE KEY `from_email` (`from_email`),
   FOREIGN KEY (`client_id`) REFERENCES `clients`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -48,7 +48,6 @@ jobs:
       run: |
         sudo apt-get install -y mysql-client
         mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} < database/migration.sql
-        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} < database/seeds.sql
         mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} -e "show tables;"
     - name: Use Node.js ${{ matrix.node-version }}    
       uses: actions/setup-node@v1
