@@ -54,6 +54,7 @@ describe('Test for default-handler', function () {
       }
       axios.post.mockImplementationOnce((url, data) => {
         expect(data).toEqual(payload.Records[0].Sns)
+        expect(url).toEqual('https://test.domain/mailer/amazon/callback')
         Promise.resolve({})
       })
 
@@ -75,7 +76,7 @@ describe('Test for default-handler', function () {
               if (Object.keys(message.mail).includes('commonHeaders')) {
                 expect(Item).toMatchObject({
                   messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                  sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
+                  sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                   source: 'john@example.com',
                   sendingAccountId: '123456789012',
                   subject: 'Hello',
@@ -84,7 +85,7 @@ describe('Test for default-handler', function () {
               } else {
                 expect(Item).toMatchObject({
                   messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                  sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
+                  sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                   source: 'john@example.com',
                   sendingAccountId: '123456789012',
                   subject: null,
@@ -130,7 +131,7 @@ describe('Test for default-handler', function () {
             if (isNotification) {
               expect.objectContaining({
                 messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
+                sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                 source: 'john@example.com',
                 sendingAccountId: '123456789012',
                 subject: 'Hello',
@@ -153,7 +154,7 @@ describe('Test for default-handler', function () {
             if (isNotification) {
               expect(Item).toMatchObject({
                 messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                sourceArn: 'arn:aws:ses:us-west-2:888888888888:identity/example.com',
+                sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                 source: 'john@example.com',
                 sendingAccountId: '123456789012',
                 subject: 'Hello',

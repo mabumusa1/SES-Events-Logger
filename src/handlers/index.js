@@ -22,13 +22,6 @@ exports.handler = async (event, context) => {
   }
   const item = []
 
-  // We want to store the subject line
-  if (Object.keys(message.mail).includes('commonHeaders')) {
-    item.subject = message.mail.commonHeaders.subject
-  } else {
-    item.subject = null
-  }
-
   // Add Items based on the message type to content field
   switch (recordType) {
     case 'bounce':
@@ -104,14 +97,39 @@ exports.handler = async (event, context) => {
 
   const con = await dbConnection()
   try {
+    let selectSQL = `SELECT * FROM forwarder where arn = '${message.mail.sourceArn}'`;
+     // We want to store the subject line
+     if (Object.keys(message.mail).includes('commonHeaders')) {
+        item.subject = message.mail.commonHeaders.subject
+        // Check if the payload has mail
+        if (typeof message.mail.sourceArn === 'undefined') {
+          var regex = /<(.*)>/g;
+          var matches = regex.exec(message.mail.commonHeaders.from[0]);
+          if(!matches) {
+            selectSQL = `SELECT * FROM forwarder where from_email = '${message.mail.commonHeaders.from[0]}'`
+          }else{
+            selectSQL = `SELECT * FROM forwarder where from_email = '${matches[1]}'` 
+          }
+        }
+    } else {
+      item.subject = null
+    }
     const tableName = process.env.DB_TABLE || `log_${date.toISOString().substr(0, 7).replace('-', '_')}`
-    const sql = `INSERT INTO ${tableName} (messageId, sourceArn, source,sendingAccountId,subject,timestamp,content) VALUES (?, ?, ?, ?, ?, ?, ?)`
+    const insertSQL = `INSERT INTO ${tableName} (messageId, sourceArn, source,sendingAccountId,subject,timestamp,content) VALUES (?, ?, ?, ?, ?, ?, ?)`
     const insertRecord = [message.mail.messageId, message.mail.sourceArn, message.mail.source, message.mail.sendingAccountId, item.subject, date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0], item.content]
-    //TODO: GET THE URL TO FORWARD TO FROM MYSQL
-    await axios.post('/', element.Sns);
+
     await con.query('START TRANSACTION')
-    await con.query(sql, insertRecord)
-    await con.query('COMMIT')    
+    await con.query(insertSQL, insertRecord)
+    await con.query('COMMIT')
+
+    /**
+     * Most of the events include ARN
+     * We will use ARN to be the key to select the correct row
+     * if ARN is not filled we will use source from the headers
+     */
+
+    const rec = await con.query(selectSQL)
+    await axios.post(rec[0].url, element.Sns);
     
   } catch (error) {
     await con.query('ROLLBACK')
