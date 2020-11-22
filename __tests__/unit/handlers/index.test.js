@@ -1,13 +1,12 @@
 const glob = require('glob')
 const path = require('path')
-const axios = require('axios');
-const MockAdapter = require("axios-mock-adapter");
-const axiosMock = new MockAdapter(axios);
+const axios = require('axios')
+const MockAdapter = require('axios-mock-adapter')
+const axiosMock = new MockAdapter(axios)
 
 const LambdaTester = require('lambda-tester')
 const loggerHandler = require('../../../src/handlers/index.js').handler
 const dbConnection = require('../../../src/handlers/dbConnectionPool')
-
 
 const tableName = process.env.DB_TABLE
 
@@ -54,8 +53,7 @@ describe('Test for default-handler', function () {
         message = element.Sns
       }
 
-      axiosMock.onPost("https://test.domain/mailer/amazon/callback", payload.Records[0].Sns ).reply(200, {});      
-      
+      axiosMock.onPost('https://test.domain/mailer/amazon/callback', payload.Records[0].Sns).reply(200, {})
 
       // Add the record to the database
       await LambdaTester(loggerHandler)
@@ -226,7 +224,7 @@ describe('Test for default-handler', function () {
               timestamp: '2016-10-14T05:02:16.000Z'
             })
             expect(content).toEqual(JSON.parse('{}'))
-            
+
             break
           default:
             fail('Invalid Type of message')
@@ -247,41 +245,32 @@ describe('Test for default-handler', function () {
     it(`Verify it logs and do not publish notifications ${file} `, async (done) => {
       const payload = require(path.resolve(file))
       let message = null
-      let recordType = null
       const element = payload.Records[0]
       const isNotification = Object.prototype.hasOwnProperty.call(element.Sns, 'Type')
       if (isNotification) {
         message = JSON.parse(element.Sns.Message)
-        recordType = message.notificationType.toLowerCase()
       } else {
-        recordType = element.Sns.eventType.toLowerCase()
         message = element.Sns
       }
 
-      axiosMock.onPost("https://test.domain/mailer/amazon/callback", payload.Records[0].Sns ).reply(500, {});      
-            // Add the record to the database
-            await LambdaTester(loggerHandler)
-            .event(payload)
-            .expectSucceed()
-    
-          const con = await dbConnection()
-          try {
-            const rec = await con.query(`SELECT * FROM ${tableName} where messageId = '${message.mail.messageId}'`)
-            const content = JSON.parse(rec[0].content)
-            expect(rec[0].published).toBeFalsy()
-            delete rec[0].content
-            const Item = JSON.parse(JSON.stringify(rec[0]))
-          
-          }catch (error) {
-            fail(error)
-            done()
-          } finally {
-            await con.release()
-            await con.destroy()
-            done()
-          }
+      axiosMock.onPost('https://test.domain/mailer/amazon/callback', payload.Records[0].Sns).reply(500, {})
+      // Add the record to the database
+      await LambdaTester(loggerHandler)
+        .event(payload)
+        .expectSucceed()
+
+      const con = await dbConnection()
+      try {
+        const rec = await con.query(`SELECT * FROM ${tableName} where messageId = '${message.mail.messageId}'`)
+        expect(rec[0].published).toBeFalsy()
+      } catch (error) {
+        fail(error)
+        done()
+      } finally {
+        await con.release()
+        await con.destroy()
+        done()
+      }
     })
   })
-
-
 })

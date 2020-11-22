@@ -1,6 +1,6 @@
 exports.handler = async (event, context) => {
   const dbConnection = require('./dbConnectionPool')
-  const axios = require('axios');
+  const axios = require('axios')
   /**
      * We have two types to be handled
      * Notifications from SES without a configuration set
@@ -98,45 +98,44 @@ exports.handler = async (event, context) => {
   const con = await dbConnection()
   try {
     const tableName = process.env.DB_TABLE || `log_${date.toISOString().substr(0, 7).replace('-', '_')}`
-    let selectSQL = `SELECT * FROM forwarder where arn = '${message.mail.sourceArn}'`;
-      /**
+    let selectSQL = `SELECT * FROM forwarder where arn = '${message.mail.sourceArn}'`
+    /**
        * Most of the events include ARN
        * We will use ARN to be the key to select the correct row
        * if ARN is not filled we will use source from the headers
        */
-      // We want to store the subject line
-     if (Object.keys(message.mail).includes('commonHeaders')) {
-        item.subject = message.mail.commonHeaders.subject
-        // Check if the payload has mail
-        if (typeof message.mail.sourceArn === 'undefined') {
-          var regex = /<(.*)>/g;
-          var matches = regex.exec(message.mail.commonHeaders.from[0]);
-          if(!matches) {
-            selectSQL = `SELECT * FROM forwarder where from_email = '${message.mail.commonHeaders.from[0]}'`
-          }else{
-            selectSQL = `SELECT * FROM forwarder where from_email = '${matches[1]}'` 
-          }
+    // We want to store the subject line
+    if (Object.keys(message.mail).includes('commonHeaders')) {
+      item.subject = message.mail.commonHeaders.subject
+      // Check if the payload has mail
+      if (typeof message.mail.sourceArn === 'undefined') {
+        const regex = /<(.*)>/g
+        const matches = regex.exec(message.mail.commonHeaders.from[0])
+        if (!matches) {
+          selectSQL = `SELECT * FROM forwarder where from_email = '${message.mail.commonHeaders.from[0]}'`
+        } else {
+          selectSQL = `SELECT * FROM forwarder where from_email = '${matches[1]}'`
         }
+      }
     } else {
       item.subject = null
     }
-    
+
     const rec = await con.query(selectSQL)
 
-
     const published = await axios.post(rec[0].url, element.Sns).then(() => {
-          return true;
+      return true
     }).catch((error) => {
-      return false;
+      console.error(error)
+      return false
     })
-    
+
     const insertSQL = `INSERT INTO ${tableName} (messageId, sourceArn, source,sendingAccountId,subject,timestamp,published,content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-    const insertRecord = [message.mail.messageId, message.mail.sourceArn, message.mail.source, message.mail.sendingAccountId, item.subject, date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0], published, item.content]    
+    const insertRecord = [message.mail.messageId, message.mail.sourceArn, message.mail.source, message.mail.sendingAccountId, item.subject, date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0], published, item.content]
 
     await con.query('START TRANSACTION')
     await con.query(insertSQL, insertRecord)
     await con.query('COMMIT')
-
   } catch (error) {
     await con.query('ROLLBACK')
     context.fail(error)
