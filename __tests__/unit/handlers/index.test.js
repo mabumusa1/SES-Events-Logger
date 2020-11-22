@@ -1,17 +1,22 @@
 const glob = require('glob')
 const path = require('path')
-const axios = require('axios');
-const MockAdapter = require("axios-mock-adapter");
-const axiosMock = new MockAdapter(axios);
+const axios = require('axios')
+const MockAdapter = require('axios-mock-adapter')
+const axiosMock = new MockAdapter(axios)
 
 const LambdaTester = require('lambda-tester')
 const loggerHandler = require('../../../src/handlers/index.js').handler
 const dbConnection = require('../../../src/handlers/dbConnectionPool')
 
-
 const tableName = process.env.DB_TABLE
 
 describe('Test for default-handler', function () {
+  beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+  })
+  afterAll(() => {
+    console.log.mockRestore()
+  })
   beforeEach(async (done) => {
     const con = await dbConnection()
     try {
@@ -54,8 +59,7 @@ describe('Test for default-handler', function () {
         message = element.Sns
       }
 
-      axiosMock.onPost("https://test.domain/mailer/amazon/callback", payload.Records[0].Sns ).reply(200, {});      
-      
+      axiosMock.onPost('https://test.domain/mailer/amazon/callback', payload.Records[0].Sns).reply(200, {})
 
       // Add the record to the database
       await LambdaTester(loggerHandler)
@@ -64,29 +68,30 @@ describe('Test for default-handler', function () {
 
       const con = await dbConnection()
       try {
-        const rec = await con.query(`SELECT * FROM ${tableName} where messageId = '${message.mail.messageId}'`)
+        const rec = await con.query(`SELECT * FROM ${tableName} where messageid = '${message.mail.messageId}'`)
         const content = JSON.parse(rec[0].content)
-        expect(rec[0].published).toBeTruthy()
         delete rec[0].content
-        const Item = JSON.parse(JSON.stringify(rec[0]))
+        const item = JSON.parse(JSON.stringify(rec[0]))
+        expect(rec[0].published).toBeTruthy()
+        delete rec[0].published
         switch (recordType) {
           case 'bounce':
             if (isNotification) {
               if (Object.keys(message.mail).includes('commonHeaders')) {
-                expect(Item).toMatchObject({
-                  messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                  sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+                expect(item).toMatchObject({
+                  messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                  sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                   source: 'john@example.com',
-                  sendingAccountId: '123456789012',
+                  sendingaccountid: '123456789012',
                   subject: 'Hello',
                   timestamp: '2016-01-27T14:59:38.000Z'
                 })
               } else {
-                expect(Item).toMatchObject({
-                  messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                  sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+                expect(item).toMatchObject({
+                  messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                  sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                   source: 'john@example.com',
-                  sendingAccountId: '123456789012',
+                  sendingaccountid: '123456789012',
                   subject: null,
                   timestamp: '2016-01-27T14:59:38.000Z'
                 })
@@ -94,20 +99,20 @@ describe('Test for default-handler', function () {
               expect(content).toEqual(JSON.parse('{"bounceType": "Permanent","bounceSubType": "General","bouncedRecipients":[{"emailAddress":"jane@example.com"},{"emailAddress":"richard@example.com"}],"timestamp":"2016-01-27T14:59:38.237Z"}'))
             } else {
               if (Object.keys(message.mail).includes('commonHeaders')) {
-                expect(Item).toMatchObject({
-                  messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                  sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+                expect(item).toMatchObject({
+                  messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                  sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                   source: 'Sender Name <sender@example.com>',
-                  sendingAccountId: '123456789012',
+                  sendingaccountid: '123456789012',
                   subject: 'Message sent from Amazon SES',
                   timestamp: '2017-08-05T00:40:02.000Z'
                 })
               } else {
-                expect(Item).toMatchObject({
-                  messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                  sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+                expect(item).toMatchObject({
+                  messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                  sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                   source: 'Sender Name <sender@example.com>',
-                  sendingAccountId: '123456789012',
+                  sendingaccountid: '123456789012',
                   subject: null,
                   timestamp: '2017-08-05T00:40:02.000Z'
                 })
@@ -116,11 +121,11 @@ describe('Test for default-handler', function () {
             }
             break
           case 'click':
-            expect(Item).toMatchObject({
-              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-              sourceArn: null,
+            expect(item).toMatchObject({
+              messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+              sourcearn: null,
               source: 'sender@example.com',
-              sendingAccountId: '123456789012',
+              sendingaccountid: '123456789012',
               subject: 'Message sent from Amazon SES',
               timestamp: '2017-08-08T23:50:05.000Z'
             })
@@ -129,20 +134,20 @@ describe('Test for default-handler', function () {
           case 'complaint':
             if (isNotification) {
               expect.objectContaining({
-                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+                messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                 source: 'john@example.com',
-                sendingAccountId: '123456789012',
+                sendingaccountid: '123456789012',
                 subject: 'Hello',
                 timestamp: '2016-01-27T14:59:38.000Z'
               })
               expect(content).toEqual(JSON.parse('{"complainedRecipients":[{"emailAddress":"richard@example.com"}],"timestamp":"2016-01-27T14:59:38.237Z"}'))
             } else {
-              expect(Item).toMatchObject({
-                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+              expect(item).toMatchObject({
+                messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                 source: 'Sender Name <sender@example.com>',
-                sendingAccountId: '123456789012',
+                sendingaccountid: '123456789012',
                 subject: 'Message sent from Amazon SES',
                 timestamp: '2017-08-05T00:40:01.000Z'
               })
@@ -151,21 +156,21 @@ describe('Test for default-handler', function () {
             break
           case 'delivery':
             if (isNotification) {
-              expect(Item).toMatchObject({
-                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+              expect(item).toMatchObject({
+                messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                 source: 'john@example.com',
-                sendingAccountId: '123456789012',
+                sendingaccountid: '123456789012',
                 subject: 'Hello',
                 timestamp: '2016-01-27T14:59:38.000Z'
               })
               expect(content).toEqual(JSON.parse('{"recipients":["jane@example.com"],"reportingMTA":"a8-70.smtp-out.amazonses.com","smtpResponse":"250 ok:  Message 64111812 accepted","timestamp":"2016-01-27T14:59:38.237Z"}'))
             } else {
-              expect(Item).toMatchObject({
-                messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-                sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+              expect(item).toMatchObject({
+                messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+                sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
                 source: 'sender@example.com',
-                sendingAccountId: '123456789012',
+                sendingaccountid: '123456789012',
                 subject: 'Message sent from Amazon SES',
                 timestamp: '2016-10-18T23:20:52.000Z'
               })
@@ -173,60 +178,60 @@ describe('Test for default-handler', function () {
             }
             break
           case 'deliverydelay':
-            expect(Item).toMatchObject({
-              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-              sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+            expect(item).toMatchObject({
+              messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+              sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
               source: 'sender@example.com',
-              sendingAccountId: '123456789012',
+              sendingaccountid: '123456789012',
               subject: null,
               timestamp: '2020-06-16T00:15:40.000Z'
             })
             expect(content).toEqual(JSON.parse('{"delayType":"TransientCommunicationFailure","expirationTime":"2020-06-16T00:25:40.914Z","delayedRecipients":[{"emailAddress":"recipient@example.com","status":"4.4.1","diagnosticCode":"smtp; 421 4.4.1 Unable to connect to remote host"}],"timestamp":"2020-06-16T00:25:40.095Z"}'))
             break
           case 'open':
-            expect(Item).toMatchObject({
-              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-              sourceArn: null,
+            expect(item).toMatchObject({
+              messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+              sourcearn: null,
               source: 'sender@example.com',
-              sendingAccountId: '123456789012',
+              sendingaccountid: '123456789012',
               subject: 'Message sent from Amazon SES',
               timestamp: '2017-08-08T21:59:49.000Z'
             })
             expect(content).toEqual(JSON.parse('{"ipAddress":"192.0.2.1","userAgent":"Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_3 like Mac OS X) AppleWebKit/603.3.8 (KHTML, like Gecko) Mobile/14G60","timestamp":"2017-08-09T22:00:19.652Z"}'))
             break
           case 'reject':
-            expect(Item).toMatchObject({
-              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-              sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+            expect(item).toMatchObject({
+              messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+              sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
               source: 'sender@example.com',
-              sendingAccountId: '123456789012',
+              sendingaccountid: '123456789012',
               subject: 'Message sent from Amazon SES',
               timestamp: '2016-10-14T17:38:15.000Z'
             })
             expect(content).toEqual(JSON.parse('{"reason":"Bad content"}'))
             break
           case 'rendering failure':
-            expect(Item).toMatchObject({
-              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-              sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+            expect(item).toMatchObject({
+              messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+              sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
               source: 'sender@example.com',
-              sendingAccountId: '123456789012',
+              sendingaccountid: '123456789012',
               subject: null,
               timestamp: '2018-01-22T18:43:06.000Z'
             })
             expect(content).toEqual(JSON.parse('{"errorMessage":"Attribute \'attributeName\' is not present in the rendering data.","templateName":"MyTemplate"}'))
             break
           case 'send':
-            expect(Item).toMatchObject({
-              messageId: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
-              sourceArn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
+            expect(item).toMatchObject({
+              messageid: '00000137860315fd-34208509-5b74-41f3-95c5-41f3-41f3',
+              sourcearn: 'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com',
               source: 'sender@example.com',
-              sendingAccountId: '123456789012',
+              sendingaccountid: '123456789012',
               subject: 'Message sent from Amazon SES',
               timestamp: '2016-10-14T05:02:16.000Z'
             })
             expect(content).toEqual(JSON.parse('{}'))
-            
+
             break
           default:
             fail('Invalid Type of message')
@@ -247,41 +252,32 @@ describe('Test for default-handler', function () {
     it(`Verify it logs and do not publish notifications ${file} `, async (done) => {
       const payload = require(path.resolve(file))
       let message = null
-      let recordType = null
       const element = payload.Records[0]
       const isNotification = Object.prototype.hasOwnProperty.call(element.Sns, 'Type')
       if (isNotification) {
         message = JSON.parse(element.Sns.Message)
-        recordType = message.notificationType.toLowerCase()
       } else {
-        recordType = element.Sns.eventType.toLowerCase()
         message = element.Sns
       }
 
-      axiosMock.onPost("https://test.domain/mailer/amazon/callback", payload.Records[0].Sns ).reply(500, {});      
-            // Add the record to the database
-            await LambdaTester(loggerHandler)
-            .event(payload)
-            .expectSucceed()
-    
-          const con = await dbConnection()
-          try {
-            const rec = await con.query(`SELECT * FROM ${tableName} where messageId = '${message.mail.messageId}'`)
-            const content = JSON.parse(rec[0].content)
-            expect(rec[0].published).toBeFalsy()
-            delete rec[0].content
-            const Item = JSON.parse(JSON.stringify(rec[0]))
-          
-          }catch (error) {
-            fail(error)
-            done()
-          } finally {
-            await con.release()
-            await con.destroy()
-            done()
-          }
+      axiosMock.onPost('https://test.domain/mailer/amazon/callback', payload.Records[0].Sns).reply(500, {})
+      // Add the record to the database
+      await LambdaTester(loggerHandler)
+        .event(payload)
+        .expectSucceed()
+
+      const con = await dbConnection()
+      try {
+        const rec = await con.query(`SELECT * FROM ${tableName} where messageid = '${message.mail.messageId}'`)
+        expect(rec[0].published).toBeFalsy()
+      } catch (error) {
+        fail(error)
+        done()
+      } finally {
+        await con.release()
+        await con.destroy()
+        done()
+      }
     })
   })
-
-
 })
