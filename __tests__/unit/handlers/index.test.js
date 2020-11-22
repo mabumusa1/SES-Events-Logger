@@ -70,9 +70,9 @@ describe('Test for default-handler', function () {
       try {
         const rec = await con.query(`SELECT * FROM ${tableName} where messageId = '${message.mail.messageId}'`)
         const content = JSON.parse(rec[0].content)
-        expect(rec[0].published).toBeTruthy()
         delete rec[0].content
         const Item = JSON.parse(JSON.stringify(rec[0]))
+        expect(rec[0].published).toBeTruthy()
         switch (recordType) {
           case 'bounce':
             if (isNotification) {
