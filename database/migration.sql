@@ -53,11 +53,11 @@ CREATE TABLE `forwarder` (
 
 
 INSERT INTO `clients` 
-(`client_name`) 
+(id, `client_name`) 
 VALUES 
-('test client');
+(1,'test client');
 
 INSERT INTO `forwarder`
 (`client_id`, `arn`, `from_email`, `url`)
 VALUES
-(1,'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com','sender@example.com', 'https://test.domain/mailer/amazon/callback')
+(1,'arn:aws:ses:us-east-1:123456789012:identity/sender@example.com','sender@example.com', 'https://test.domain/mailer/amazon/callback');
