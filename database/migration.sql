@@ -3,8 +3,8 @@
     You need to create 12 tables each year
     to represent each month of the up coming year
  */;
-DROP TABLE IF EXISTS `logs`;
-CREATE TABLE `logs` (
+DROP TABLE IF EXISTS `log_2020_12`;
+CREATE TABLE `log_2020_12` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `messageId` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `sourceArn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE `forwarder` (
   `from_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE EY `arn` (`arn`),
+  UNIQUE KEY `arn` (`arn`),
   UNIQUE KEY `from_email` (`from_email`),
   FOREIGN KEY (`client_id`) REFERENCES `clients`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
