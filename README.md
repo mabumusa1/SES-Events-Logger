@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/mabumusa1/SES-Events-Logger/branch/dev/graph/badge.svg?token=6XT348R2V1)](https://codecov.io/gh/mabumusa1/SES-Events-Logger)
+
 ![Logger](.github/seslogo.png "SES Logger")
 
 Logger Introduction
