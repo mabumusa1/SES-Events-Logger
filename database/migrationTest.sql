@@ -79,6 +79,12 @@ engine=innodb
 DEFAULT charset=utf8mb4 
 COLLATE=utf8mb4_unicode_ci; 
 
+
+/***
+* DO NOT INSERT THOSE INTO THE LIVE DATABASE
+* THIS IS FOR TESTING ONLY
+****/
+
 INSERT INTO `clients` 
             (`client_name`) 
 VALUES      ('test client'); 
