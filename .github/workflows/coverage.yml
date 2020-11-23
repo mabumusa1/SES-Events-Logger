@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-        db-types: [mariadb']
+        db-types: ['mariadb']
     services:
       mariadb:
         image: mariadb:10.3
@@ -30,8 +30,8 @@ jobs:
     - name: Create Database
       run: |
         sudo apt-get install -y mysql-client
-        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} < database/migrationTest.sql
-        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} -e "show tables;"
+        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mariadb.ports[3306] }} < database/migrationTest.sql
+        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mariadb.ports[3306] }} -e "show tables;"
     - name: Use Node.js ${{ matrix.node-version }}    
       uses: actions/setup-node@v1
       with:
