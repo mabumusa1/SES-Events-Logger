@@ -20,7 +20,7 @@
         "webpack-cli": "^4.2.0"
     },
     "scripts": {
-        "test": "jest",
+        "test": "jest --coverage",
         "testlocal": "export $(cat .env | xargs) && export TZ=Asia/Amman && jest",
         "build": "webpack",
         "lint": "standard",

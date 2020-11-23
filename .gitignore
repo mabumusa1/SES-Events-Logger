@@ -2,3 +2,4 @@ node_modules
 workspace.code-workspace
 dist
 .env
+coverage
