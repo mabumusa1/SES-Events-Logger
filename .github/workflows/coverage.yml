@@ -1,0 +1,56 @@
+name: Test Dev Branch
+
+on:
+  push:
+    branches:
+      - dev
+      
+jobs:
+  get_coverage:
+    runs-on: ubuntu-latest
+    name: Test on ${{ matrix.node-version }} ${{ matrix.db-types }}
+    strategy:
+      matrix:
+        node-version: [12.x]
+        db-types: [mariadb']
+    services:
+      mariadb:
+        image: mariadb:10.3
+        env:
+          MYSQL_USER: logger
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: logger
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create Database
+      run: |
+        sudo apt-get install -y mysql-client
+        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} < database/migrationTest.sql
+        mysql -h 127.0.0.1 -ulogger -ppassword logger --port ${{ job.services.mysql.ports[3306] }} -e "show tables;"
+    - name: Use Node.js ${{ matrix.node-version }}    
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: |
+        npm install
+        npm run lint
+        npm run test
+        npm run build
+      env: 
+        DB_HOST: 127.0.0.1
+        DB_USER: logger
+        DB_PASSWORD: password
+        DB_PORT: ${{ job.services.mysql.ports[3306] }}
+        DB_DATABASE: logger
+        DB_TABLE: logs
+        TZ: Asia/Amman
+    - name: Run CodeCov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage/coverage-final.json
