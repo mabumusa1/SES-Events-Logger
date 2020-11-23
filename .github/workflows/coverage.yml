@@ -45,7 +45,7 @@ jobs:
         DB_HOST: 127.0.0.1
         DB_USER: logger
         DB_PASSWORD: password
-        DB_PORT: ${{ job.services.mysql.ports[3306] }}
+        DB_PORT: ${{ job.services.mariadb.ports[3306] }}
         DB_DATABASE: logger
         DB_TABLE: logs
         TZ: Asia/Amman
